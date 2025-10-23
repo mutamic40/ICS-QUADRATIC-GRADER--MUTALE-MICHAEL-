@@ -14,11 +14,11 @@ This project provides two main tools in one file (`index.html`), making it easy 
 
 1. **Quadratic Solver**  
    - Solves equations in the standard form: `ax² + bx + c = 0`.  
-   - Automatically calculates the **discriminant (Δ = b² - 4ac)**.  
+   - Automatically calculates the **discriminant (D = b² - 4ac)**.  
    - Determines the **nature of roots**:
-     - Two distinct real roots (Δ > 0)  
-     - One repeated real root (Δ = 0)  
-     - Two complex conjugate roots (Δ < 0)  
+     - Two distinct real roots (D > 0)  
+     - One repeated real root(D = 0)  
+     - Two complex conjugate roots (D < 0)  
    - Displays the **equation and roots** clearly, formatted for readability.  
    - Includes **input validation** to prevent invalid calculations (e.g., `a = 0` is not allowed).  
 
