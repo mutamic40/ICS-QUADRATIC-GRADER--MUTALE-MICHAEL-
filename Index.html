@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ICT251 | Quadratic Solver & Grading System</title>
+
+<style>
+/* ===== GENERAL STYLING ===== */
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(120deg, #e6f0ff, #f9f9ff);
+  color: #222;
+  margin: 20px;
+}
+
+h1 {
+  text-align: center;
+  color: #004aad;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+  margin-bottom: 5px;
+}
+
+p.subtitle {
+  text-align: center;
+  font-size: 1rem;
+  color: #444;
+  margin-bottom: 30px;
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 40px;
+  margin-top: 20px;
+}
+
+/* ===== TOOL BOX ===== */
+.tool-box {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  width: 360px;
+  transition: transform 0.2s ease-in-out;
+}
+
+.tool-box:hover {
+  transform: translateY(-3px);
+}
+
+h2 {
+  color: #004aad;
+  font-size: 1.2rem;
+  border-bottom: 2px solid #d0d0d0;
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+}
+
+.instruction {
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-top: 10px;
+  margin-bottom: 3px;
+}
+
+input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid #bbb;
+  border-radius: 6px;
+  transition: border-color 0.3s;
+}
+
+input[type="number"]:focus {
+  border-color: #004aad;
+  outline: none;
+}
+
+button {
+  padding: 10px 15px;
+  margin-top: 10px;
+  margin-right: 8px;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.1s;
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+.compute-btn {
+  background-color: #198754;
+  color: white;
+}
+
+.compute-btn:hover {
+  background-color: #146c43;
+}
+
+.reset-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.reset-btn:hover {
+  background-color: #b02a37;
+}
+
+.result-area {
+  background-color: #f1f5ff;
+  border: 2px solid #cfd8ff;
+  border-radius: 6px;
+  padding: 15px;
+  margin-top: 15px;
+  min-height: 60px;
+  line-height: 1.5em;
+  font-size: 0.95rem;
+}
+
+.error {
+  color: #d63333;
+  font-weight: bold;
+}
+
+.highlight {
+  color: #004aad;
+  font-weight: bold;
+}
+
+.footer {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #555;
+  margin-top: 40px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>ICT251: Web Tools</h1>
+<p class="subtitle">Solve quadratic equations or convert a numeric score to a letter grade easily!</p>
+
+<div class="container">
+
+  <!-- Quadratic Solver Section -->
+  <div class="tool-box">
+    <h2>1️⃣ Quadratic Solver (ax² + bx + c = 0)</h2>
+    <p class="instruction">Enter values for a, b, and c. 'a' must not be zero.</p>
+
+    <label for="a">Enter a:</label>
+    <input type="number" id="a" placeholder="">
+    <small>Coefficient of x² (cannot be 0)</small>
+
+    <label for="b">Enter b:</label>
+    <input type="number" id="b" placeholder="">
+    <small>Coefficient of x</small>
+
+    <label for="c">Enter c:</label>
+    <input type="number" id="c" placeholder="">
+    <small>Constant term</small>
+
+    <button class="compute-btn" onclick="solveQuadratic()">Compute ✅</button>
+    <button class="reset-btn" onclick="resetQuadratic()">Clear ✖</button>
+
+    <div class="result-area" id="quad-result">Awaiting input...</div>
+  </div>
+
+  <!-- Grading System Section -->
+  <div class="tool-box">
+    <h2>2️⃣ Score to Grade Converter</h2>
+    <p class="instruction">Enter a score from 0 to 100 to get the letter grade.</p>
+
+    <label for="score">Enter Score:</label>
+    <input type="number" id="score" min="0" max="100" placeholder="">
+
+    <button class="compute-btn" onclick="determineGrade()">Compute ✅</button>
+    <button class="reset-btn" onclick="resetGrade()">Clear ✖</button>
+
+    <div class="result-area" id="grade-result">Enter your score to see your grade.</div>
+  </div>
+
+</div>
+
+<div class="footer">
+  © 2025 ICT251 Grading and Solving Quadratic | Created by Michael Mutale
+</div>
+
+<script>
+// QUADRATIC SOLVER FUNCTION
+function solveQuadratic() {
+    const a = parseFloat(document.getElementById('a').value);
+    const b = parseFloat(document.getElementById('b').value);
+    const c = parseFloat(document.getElementById('c').value);
+    const resultDiv = document.getElementById('quad-result');
+
+    if (isNaN(a) || isNaN(b) || isNaN(c)) {
+        resultDiv.innerHTML = '<span class="error">⚠ Please enter valid numbers for a, b, and c.</span>';
+        return;
+    }
+    if (a === 0) {
+        resultDiv.innerHTML = '<span class="error">⚠ a cannot be zero (not a quadratic equation).</span>';
+        return;
+    }
+
+    const eqn = `${a}x² ${b >= 0 ? '+ ' + b : '- ' + Math.abs(b)}x ${c >= 0 ? '+ ' + c : '- ' + Math.abs(c)} = 0`;
+    const D = b * b - 4 * a * c;
+    let output = `<p>Equation: <span class="highlight">${eqn}</span></p>`;
+    output += `<p>Discriminant (Δ): <span class="highlight">${D.toFixed(3)}</span></p>`;
+
+    if (D > 0) {
+        const x1 = (-b + Math.sqrt(D)) / (2 * a);
+        const x2 = (-b - Math.sqrt(D)) / (2 * a);
+        output += `<p>Nature: Two distinct real roots</p>
+                   <p>Roots: x₁ = <span class="highlight">${x1.toFixed(3)}</span>, 
+                   x₂ = <span class="highlight">${x2.toFixed(3)}</span></p>`;
+    } else if (D === 0) {
+        const x = -b / (2 * a);
+        output += `<p>Nature: One real repeated root</p>
+                   <p>Root: x = <span class="highlight">${x.toFixed(3)}</span></p>`;
+    } else {
+        const real = (-b / (2 * a)).toFixed(3);
+        const imag = (Math.sqrt(-D) / (2 * a)).toFixed(3);
+        output += `<p>Nature: Two complex conjugate roots</p>
+                   <p>Roots: x₁ = <span class="highlight">${real} + ${imag}i</span>, 
+                   x₂ = <span class="highlight">${real} - ${imag}i</span></p>`;
+    }
+
+    resultDiv.innerHTML = output;
+}
+
+function resetQuadratic() {
+    document.getElementById('a').value = '';
+    document.getElementById('b').value = '';
+    document.getElementById('c').value = '';
+    document.getElementById('quad-result').innerHTML = 'Awaiting input...';
+}
+
+// GRADING SYSTEM FUNCTION
+function determineGrade() {
+    const score = parseInt(document.getElementById('score').value);
+    const resultDiv = document.getElementById('grade-result');
+
+    if (isNaN(score)) {
+        resultDiv.innerHTML = '<span class="error">⚠ Please enter a score.</span>';
+        return;
+    }
+    if (score < 0 || score > 100) {
+        resultDiv.innerHTML = '<span class="error">⚠ Score must be between 0 and 100.</span>';
+        return;
+    }
+
+    let grade;
+    if (score >= 85) grade = 'A+';
+    else if (score >= 75) grade = 'A';
+    else if (score >= 65) grade = 'B+';
+    else if (score >= 60) grade = 'B';
+    else if (score >= 55) grade = 'C+';
+    else if (score >= 50) grade = 'C';
+    else grade = 'D';
+
+    resultDiv.innerHTML = `Score: <span class="highlight">${score}</span><br>Grade: <span class="highlight">${grade}</span>`;
+}
+
+function resetGrade() {
+    document.getElementById('score').value = '';
+    document.getElementById('grade-result').innerHTML = 'Enter your score to see your grade.';
+}
+</script>
+
+</body>
+</html>
